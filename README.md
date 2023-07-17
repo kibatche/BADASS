@@ -22,4 +22,4 @@ Un AS, un système autonome, est une entité essentielle dans la construction du
 > Exemples :
 - Pas de trafic commercial dans un réseau éducatif
 - Pas de trafic militaire américain passant par la Russie
-En somme, BGP permet l'utilisation de règles que les AS peuvent mettre en place afin de convenir à leur politique interne, et notamment des politiques commerciales pour le routage d'un trafic donné entre différents AS.
+> En somme, BGP permet l'utilisation de règles que les AS peuvent mettre en place afin de convenir à leur politique interne, et notamment des politiques commerciales pour le routage d'un trafic donné entre différents AS.
