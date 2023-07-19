@@ -1,11 +1,11 @@
 # BADASS
-Ce projet vise à simuler un réseau de type FAI via GNS3 et Docker.
+Ce projet vise à simuler un réseau de types Datacenter/FAI via GNS3 et Docker.
 
-## Gloassaire
+## Glossaire
 
 ### Structures Réseau
 
-#### AS (Autonomous System)
+### AS (Autonomous System)
 
 Un AS, un système autonome, est une entité essentielle dans la construction du réseau internet. Il s'agit d'une collection de machines qui opère sous une même autorité. Cette autorité administrative peut être une université, une FAI, une entreprise etc. Internet est constitué de ces multiples réseaux indépendants, auxquels le IANA (Internet Assigned Numbers Authority) attribue une identification unique.
 
@@ -23,3 +23,13 @@ Un AS, un système autonome, est une entité essentielle dans la construction du
 - Pas de trafic commercial dans un réseau éducatif
 - Pas de trafic militaire américain passant par la Russie
 > En somme, BGP permet l'utilisation de règles que les AS peuvent mettre en place afin de convenir à leur politique interne, et notamment des politiques commerciales pour le routage d'un trafic donné entre différents AS.
+
+- VXLAN (Virtual Extensible Local Area Network)
+> VXLAN est un protocole de réseau virtuel qui vise à étendre une LAN sur un WAN (Wide Area Network). La principale utilisé est de virtualiser le réseau, alors même qu'une LAN est limitée à un réseau physique. Par tout un tas de protocoles sous-jacents, les VXLAN permettent de faciliter la mise en place de tels réseaux virtuels : concrètement, les données encapsulées dans la couche 2 du modèle OSI (datalink, ici via le protocole ethernet) dans des paquet UDP de la couche 3. Cela permet la mise en place de réseaux virtualisés de couche 2 (datalink), dont chacun aura un identifiant (VNI), facilitant la mise en place de stratégies indépendantes pour chaque sous-réseau. Ces sous réseaux, ou segments, se superposeront au réseau physique de la couche 3 (principalement, les routeurs switch etc.).
+
+> Voici à quoi peut ressembler un paquet encapsulé via VXLAN :
+
+=======================================================================
+|Paquet Original|Encapsulation VLAN|Encapsulation UDP|Encapsulation IP|
+=======================================================================
+
