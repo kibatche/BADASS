@@ -29,7 +29,5 @@ Un AS, un système autonome, est une entité essentielle dans la construction du
 
 > Voici à quoi peut ressembler un paquet encapsulé via VXLAN :
 
-=======================================================================
-|Paquet Original|Encapsulation VLAN|Encapsulation UDP|Encapsulation IP|
-=======================================================================
+![Capture d’écran du 2023-07-28 09-28-11](https://github.com/kibatche/BADASS/assets/61985948/13a3b0b4-5c48-4b3d-9a33-61d62bcfd8ef)
 
