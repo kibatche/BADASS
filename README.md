@@ -66,3 +66,30 @@ La figure 10.12 illustre un message OSPF de type 1 portant un LSA.
 
 Ce type indique le coût des liens entre les routeurs. Le type 2 est utilisé pour indiquer les réseaux auxquels l’émetteur est connecté. Les types 3 et 4 se préoccupent de l’indication des ères. À la figure 10.12, le champ LS Age est l’équivalent du temporisateur TTL (Time To Live), si ce n’est que le compteur augmente jusqu’à une certaine valeur prédéfinie, alors que le TTL descend jusqu’à 0.
 
+Le type est ici le type 1. Les deux champs Link State ID et LS sequence number sont identiques et transportent l’identificateur du routeur qui émet le message. La raison de ce double champ est de vérifier l’identité du routeur par deux moyens différents. Le numéro de séquence permet de reséquencer les messages reçus. Le LS Checksum permet de vérifier la correction du message. Il prend en compte les informations à partir du champ Option. Le champ longueur indique la longueur totale du message. Ce sont ensuite des informations sur le LSA qui sont transportées : Link ID identifiant chaque lien, informations à propos du lien (Link Data) et métrique.
+
+### BGP (Border Gateway Protocol)
+
+Pour répondre aux faiblesses d’EGP, un nouvel algorithme a été mis en chantier par l’IETF sous le nom de BGP. Une première version, BGP-1, a été implémentée en 1990, suivie de près par BGP-2 puis BGP-3. Au bout de quelques années a été déployé BGP-4, qui permet de gérer beaucoup plus efficacement les tables de routage de grande dimension en rassemblant en une seule ligne plusieurs sous-­réseaux.
+
+BGP apporte de nouvelles propriétés par rapport à EGP, en particulier celle de gérer les boucles, qui devenaient courantes dans EGP puisque ce protocole ne s’occupe que des couples de voisins, sans prendre en compte les rebouclages possibles par un troisième réseau autonome.
+
+Les messages échangés par le biais de BGP-4 sont les suivants :
+- **open** : pour ouvrir une relation avec un nœud voisin.
+- **update** : pour transmettre des informations au sujet d’une seule route ou demander la destruction de routes qui ne sont plus disponibles.
+- **keepalive** : pour acquitter les messages open et confirmer que la relation de voisinage est toujours vivante.
+- **notification** : pour envoyer un message d’erreur.
+
+Les trois grandes procédures fonctionnelles suivantes sont définies dans BGP :
+
+- acquisition des nœuds voisins ;
+- possibilité d’atteindre le voisin ;
+- possibilité d’atteindre des réseaux.
+
+Deux routeurs sont considérés comme voisins s’ils sont dans le même réseau. Si les deux routeurs sontdans des domaines autonomes distincts, ils peuvent avoir besoin d’échanger des informations de routage. Pour cela, il faut d’abord réaliser une acquisition des voisins, c’est-à‑­dire permettre à deux nœuds qui nesont pas dans le même système autonome d’échanger des informations de routage. L’acquisition doit être faite par une procédure formelle puisqu’un des deux nœuds peut ne pas avoir envie d’échanger de l’information de routage. Pour réaliser l’acquisition, un nœud émet le message open. Si le routeur distant accepte la relation, il renvoie un keepalive. Une fois la relation établie, pour maintenir la relation active les nœuds s’échangent des keepalive. Chaque nœud maintient une base de données des réseaux qu’il peut atteindre et de la route permettant d’arriver à ces différents réseaux. Quand un changement intervient, le routeur diffuse un message update vers les autres routeurs, ce qui permet à ceux-­ci de se mettre à jour.
+
+La figure 10.13 illustre le format du paquet de mise à jour BGP.
+
+![image](https://github.com/kibatche/BADASS/assets/61985948/12ce2191-ce45-4c49-8a8c-90640a29471f)
+
+Le champ Marker est réservé à l’authentification. L’émetteur peut mettre un texte chiffré qui ne peut être déchiffré que par le récepteur possédant la clé de chiffrement. Length donne la longueur du message en octet. Les types de message sont open, update, keepalive et notification.
