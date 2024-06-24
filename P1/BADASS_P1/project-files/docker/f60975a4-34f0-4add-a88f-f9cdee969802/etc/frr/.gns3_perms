@@ -1,0 +1,8 @@
+644:100:101:/etc/frr/daemons
+600:100:101:/etc/frr/bgpd.conf
+600:100:101:/etc/frr/isisd.conf
+644:0:0:/etc/frr/.gns3_perms
+600:100:101:/etc/frr/zebra.conf
+600:100:101:/etc/frr/ospfd.conf
+600:100:101:/etc/frr/staticd.conf
+755:100:101:/etc/frr
