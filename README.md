@@ -1,4 +1,5 @@
 # BADASS
+
 Création d'un réseau avec les protcoles BGP/VXLAN/EVPN à l'aide de GNS3.
 
 Les informations dans ce README sont issues de "Les Réseaux" de Guy Pujolle, ainsi que "Computer Networks" de Andrew S. Tanenbaum, Nick Feamster, David J. Wetherall.
@@ -42,6 +43,10 @@ L’objectif des algorithmes à vecteur de chemin est de pallier les insuffisanc
 
 ## Les protocoles
 
+### IS-IS
+
+L’algorithme IS-­IS a été principalement développé par l’ISO (ISO 10589). Il décrit un routage hiérarchique fondé sur la décomposition des réseaux de communication en domaines. Dans un domaine, les différents nœuds indiquent leur état aux routeurs IS-­IS afférents. Les communications interdomaines sont effectuées par un routage vers un point d’accès au domaine déterminé par les routeurs chargés des communications externes au domaine.
+
 ### OSPF
 
 OSPF fait partie de la deuxième génération de protocoles de routage. Beaucoup plus complexe que RIP, mais au prix de performances supérieures, il utilise une base de données distribuée, qui garde en mémoire l’état des liens. Ces informations forment une description de la topologie du réseau et de l’état des nœuds, qui permet de définir l’algorithme de routage par un calcul des chemins les plus courts.
@@ -75,6 +80,7 @@ Pour répondre aux faiblesses d’EGP, un nouvel algorithme a été mis en chant
 BGP apporte de nouvelles propriétés par rapport à EGP, en particulier celle de gérer les boucles, qui devenaient courantes dans EGP puisque ce protocole ne s’occupe que des couples de voisins, sans prendre en compte les rebouclages possibles par un troisième réseau autonome.
 
 Les messages échangés par le biais de BGP-4 sont les suivants :
+
 - **open** : pour ouvrir une relation avec un nœud voisin.
 - **update** : pour transmettre des informations au sujet d’une seule route ou demander la destruction de routes qui ne sont plus disponibles.
 - **keepalive** : pour acquitter les messages open et confirmer que la relation de voisinage est toujours vivante.
@@ -112,8 +118,137 @@ Les composants d'un VXLAN :
 
 - **Segment VXLAN** : chaque réseau superposé VXLAN est appelé segment VXLAN. Hôtes (par exemple, les machines virtuelles) qui font partie du même segment VXLAN (même domaine de diffusion(_broadcast domain_)) peuvent communiquer entre eux. Une passerelle de couche 3 est nécessaire pour les communications inter-VNI.
 - **Identifiant de réseau VXLAN (VNI)** : chaque segment VXLAN est identifié par un identifiant de 24 bits appelé VNI. Cela permet une segmentation à grande échelle du réseau en autorisant la coexistence de jusqu'à 16M de segments VXLAN de coexister dans le même domaine administratif. Le VNI permet d'isoler le trafic pour chaque segment VXLAN. Un hôte est identifié par la combinaison unique de son adresse MAC et de son VNI. Cela permet le chevauchement d'adresses qui se chevauchent entre les segments puisque le VNI définit la portée de la trame de couche 2 interne créée par l'hôte final. Par conséquent, des VNI différents se traduisent par des domaines différents et le trafic ne passe pas d'un domaine à l'autre.
-- **VXLAN Tunnel Endpoint (VTEP)** : La trame de couche 2 émise par l'hôte final est encapsulée dans un en-tête VXLAN qui comprend le VNI utilisé pour identifier le tunnel VXLAN. Les tunnels sont également utilisés pour ajouter un en-tête extérieur d'encapsulation externe comprenant des en-têtes UDP, IP et Ethernet pour transporter le trafic de l'hôte final sur le réseau physique sous-jacent. Ce sont points d'extrémité de tunnel ou _Network Virtualization Edges_ (NVE) qui sont responsables de la mise en correspondance des hôtes finaux avec les segments VXLAN appropriés. L'encapsulation et la décapsulation des tunnels liés au VXLAN sont appelées VTEP. Les VTEP peuvent exister sur sur n'importe quel dispositif de réseau (environnement multifournisseur) ou élément de calcul (par exemple, serveur, hyperviseur). Chaque VTEP est identifié par une adresse IP unique (adresse lo0). Le réseau physique sous-jacent est chargé de fournir la joignabilité IP entre les VTEP pour assurer la livraison du trafic de bout en bout. Les VTEP remplissent **deux fonctions** importantes à savoir **1)** la découverte de VTEP à distance pour créer une correspondance entre les adresses MAC de l'hôte final et les VTEP correspondants pour les segments VXLAN dont il est responsable; et 2) l'encapsulation VXLAN des adresses MAC des hôtes finaux pour le transporter de manière transparente sur le réseau sous-jacent et la décapsulation ultérieure des paquets reçus pour la livraison aux bons hôtes finaux. Les VTEP peuvent commuter des paquets dans le même VNID ou dans le même domaine de diffusion (passerelles L2, _L2 Gateway_) ou peuvent acheminer des paquets à travers différents VNID ou différents sous-réseaux (passerelles L3, _L3 Gateway_).
+- **VXLAN Tunnel Endpoint (VTEP)** : La trame de couche 2 émise par l'hôte final est encapsulée dans un en-tête VXLAN qui comprend le VNI utilisé pour identifier le tunnel VXLAN. Les tunnels sont également utilisés pour ajouter un en-tête extérieur d'encapsulation externe comprenant des en-têtes UDP, IP et Ethernet pour transporter le trafic de l'hôte final sur le réseau physique sous-jacent. Ce sont points d'extrémité de tunnel ou _Network Virtualization Edges_ (NVE) qui sont responsables de la mise en correspondance des hôtes finaux avec les segments VXLAN appropriés. L'encapsulation et la décapsulation des tunnels liés au VXLAN sont appelées VTEP. Les VTEP peuvent exister sur sur n'importe quel dispositif de réseau (environnement multifournisseur) ou élément de calcul (par exemple, serveur, hyperviseur). Chaque VTEP est identifié par une adresse IP unique (adresse lo0). Le réseau physique sous-jacent est chargé de fournir la joignabilité IP entre les VTEP pour assurer la livraison du trafic de bout en bout. Les VTEP remplissent **deux fonctions** importantes à savoir **1)** la découverte de VTEP à distance pour créer une correspondance entre les adresses MAC de l'hôte final et les VTEP correspondants pour les segments VXLAN dont il est responsable; et **2)** l'encapsulation VXLAN des adresses MAC des hôtes finaux pour le transporter de manière transparente sur le réseau sous-jacent et la décapsulation ultérieure des paquets reçus pour la livraison aux bons hôtes finaux. Les VTEP peuvent commuter des paquets dans le même VNID ou dans le même domaine de diffusion (passerelles L2, _L2 Gateway_) ou peuvent acheminer des paquets à travers différents VNID ou différents sous-réseaux (passerelles L3, _L3 Gateway_).
 - **Encapsulation VXLAN** : L'encapsulation VXLAN ajoute 50-54B de surcharge du fait de l'ajout d'en-têtes UDP, IP et Ethernet à la trame générée par l'hôte final. Par conséquent, il est important que le réseau de sous-couche IP prenne en charge les trames Jumbo afin de tenir compte de cette surcharge, ce qui signifie que les valeurs MTU doivent refléter la même chose sur l'ensemble du chemin traversé par le paquet encapsulé. L'en-tête UDP ajoute sa valeur de port source en calculant un hachage du contenu de la trame interne d'origine (en-têtes L2/L3/L4). Cela permet l'entropie de flux pour assurer l'équilibrage efficace de la charge du trafic VXLAN sur les chemins ECMP offerts par la sous-couche physique. La somme de contrôle UDP est fixée à 0x0000. Si la somme de contrôle n'est pas réglée sur 0x0000 par le VTEP source, le VTEP récepteur doit vérifier la somme de contrôle. Si elle est incorrecte, la trame doit être abandonnée et non décapsulée. L'en-tête IP externe se compose des adresses IP du VTEP source et de destination et ces valeurs sont utilisées pour l'acheminement du paquet par le VTEP. Ces valeurs sont utilisées pour que le paquet soit acheminé par le réseau sous-jacent. Les équipements du réseau sous-couche ne regardent pas l'en-tête VXLAN, ils ne maintiennent pas non plus d'état de tunnel et sont donc découplés de la couche supérieure.
 
 ![vxlan](https://github.com/kibatche/BADASS/assets/61985948/82b21031-9067-47fb-81dd-397ad2da056c)
+
+---
+
+Le projet
+---------
+
+# P1
+
+La P1 est très simple : il s'agit juste de configurer notre vm et gns3, ainsi que deux images docker afin d'avoir :
+
+1) un routeur
+2) un hôte
+
+Pour le routeur, afin de garder une configuration constante (c'est à dire qui ne s'efface pas à chaque création de conteneur à partir d'une image), on va faire notre propre Dockerfile. Il est présent dans le dossier `Docker` de chaque partie. Un script est présent pour construire le conteneur (c'est à lancer si jamais on n'a pas l'image sur la vm).
+
+Les services à démarrer (sous forme de daemons, c'est à dire en arrière-plan) sont :
+
+- `bgpd`, pour le protocole bgp (voir plus haut)
+- `ospfd`, pour le protocole ospf (voir plus haut)
+- `isisd`, pour le protocole is-is (voir plus haut)
+
+Pour ce faire, c'est ultra simple, il suffit de changer dans le fichier /etc/frr/daemons les `no` par des `yes` pour les services voulus.
+
+Concernant l'hôte, on a juste à importer l'image alpine.
+
+Afin d'importer ces images dans gns3 : `edit/preferences/docker` et ajouter les images.
+
+Ensuite on peut les retrouver dans l'onglet `browse all devices` et les glisser déposer.
+
+Pour terminer, il nous suffit juste de démarrer ces conteneurs, et à l'aide de la commande `ps` on est en mesure de voir que tout est bien configuré.
+
+# P2
+
+La P2 est beaucoup plus difficile. Il s'agit ici de créer un VXLAN (voir ci-dessus ce que c'est), afin de faire communiquer deux machines entre-elles.
+En réalité, les VXLAN sont surtout utilisés dans les datacenters, afin de faire communiquer par exemple deux datacenters entre eux.
+
+Nos prétentions et nos finances étant limitées, on se contentera donc de le faire entre deux hôtes alpine linux de 5mb chacun. :)
+
+Comme expliqué dans la partie correspondante de ce document, les VXLAN permettent de largement étendre le nombre de réseau virtuels (VLAN) possibles, en faisant passer de 4096 VLAN possibles à plusieurs millions, grâce notamment à l'encapsulation des trames ethernet dans une partie VXLAN à l'aide d'un identifiant (le VNI). On notera que Ethernet est un protocole **physique** et que les vlan visent d'abord à segmenter le réseau physique en réseau virtuel et ainsi augmenter leur efficience.
+
+Ethernet utilise principalement les adresses macs, nous aurons donc besoin de switches. Dans notre cas particulier, topologiquement ce sont des **spine** pour faire la communication entre deux baies par exemple, et des **leaf switches** concernant la trame ethernet au niveau de la baie elle-même. Nos deux routeurs quant à eux sont des **LEAFS**, mais dans la mesure où ce sont eux qui sont responsables de l'encapsulation et de la désencapsulation des trames, elles sont appellées VTEP : _Vxlan Tunnel Endpoints_.
+
+Pour terminer, le projet demande explicitement deux façons de faire communiquer les machines et d'établir une table de routage :
+
+- Statique, c'est un lien direct
+- Multicast, c'est une sorte de flood, via   une option de souscription pour chacun des routeurs (on verra cela plus loin)
+
+Un fichier de script est executé afin de déployer la configuration.
+
+Pour le côté statique et multicast, au départ, voyons ce qu'il en est :
+
+1) Nous devons connecter notre routeur avec le switch. Pour ce faire, on utilise un bridge.
+
+> Note : on utilise /sbin/ip car ip de busybox ne prend pas en charge le protocole vxlan...
+
+```bash
+brctl addbr br0
+/sbin/ip link set dev br0 up
+```
+
+2) Ensuite nous devons attribuer une adresse IP à l'interface eth0 (la couche ip sera en connexion avec le switch) :
+
+```bash
+/sbin/ip a add 10.42.42.$1/8 dev eth0
+```
+
+> Note : selon qu'on soit sur le routeur 1 ou 2, on change le dernier numéro pour l'adresse IP.
+
+3) On peut checker si l'interface est up avec la bonne adresse ip :
+
+```bash
+/sbin/ip a show eth0
+```
+
+À cette étape, le mode statique ou dynamique de découverte des routes change la façon de mettre en place l'interface vxlan.
+
+### Statique
+
+4) On va créer l'interface vxlan. Voyons la commande en entier, avant de la segmenter afin de mieux la comprendre :
+
+```bash
+/sbin/ip link add name vxlan10 type vxlan id 10 dev eth0 remote 10.42.42.$2 local 10.42.42.$1 dstport 4789
+```
+
+- `/sbin/ip link add name vxlan10` : on attribue un nom à l'interface
+- `type vxlan` : on attribue un type, ici on veut une interface vxlan
+- `id 10` : c'est le VNI (voir plus haut), le sujet nous commande d'utiliser le nombre 10.
+- `dev eth0` : l'interface utilisée pour le trafic sortant, donc eth0 (qu'on a configurée plus haut)
+- `remote 10.42.42.$2` : c'est le lien de connexion direct avec l'autre routeur qui se chargera de désencapsuler le paquet (et bien sûr encapsuler le paquet également)
+- `local 10.42.42.$1` : c'est l'adresse ip attribuée à l'interface eth0 .
+-  `dstport 4789` : le port de destination, c'est ce qui est recommandé par la RFC.
+
+### Dynamique
+
+4) On va créer l'interface vxlan. Voyons la commande en entier, avant de la segmenter afin de mieux la comprendre :
+
+
+### Commun
+
+5) On attribue une adresse IP à l'interface VXLAN `vxlan10`.
+
+```bash
+/sbin/ip a add 20.42.42.$1/8 dev vxlan10
+```
+
+6) On regarde si l'interface est bien configurée :
+
+```bash
+/sbin/ip -d link show vxlan10
+```
+
+7) Ensuite on va ajouter l'interface eth1 et vxlan10  au bridge, afin de pouvoir faire communiquer notre hôte alpine avec le routeur chrgé de l'encapsulation :
+
+```bash
+brctl addif br0 eth1 #addif veut dire : add interface
+brctl addif br0 vxlan10
+```
+
+8) Pour terminer, nous démarrons l'interface vxlan !
+
+```bash
+/sbin/ip link set dev vxlan10 up
+```
+
+## En résumé
+
+Nous avons vu ici pratiquement comment sont encapsulées les données. On part d'un hôte qui envoit des données, ces données sont encapsulées dans un paquet vxlan, lui-même encapsulé dans un paquet UDP, lui-même encapsulé dans une couche IP. L'inverse est opéré afin que l'hôte 2 puisse recevoir les données de l'hôte 1.
+
+Les interfaces vxlan peuvent être configuré soit de façon statique, en lien direct, soit via multicast, via une souscription à un groupe.
 
