@@ -269,7 +269,7 @@ METTRE CAPTURE ECRAN
 
 ## En résumé
 
-Nous avons vu ici pratiquement comment sont encapsulées les données. On part d'un hôte qui envoit des données, ces données sont encapsulées dans un paquet vxlan, lui-même encapsulé dans un paquet UDP, lui-même encapsulé dans une couche IP. L'inverse est opéré afin que l'hôte 2 puisse recevoir les données de l'hôte 1.
+Nous avons vu ici pratiquement comment sont encapsulées les données.
 
 Les interfaces vxlan peuvent être configurées soit de façon statique, en lien direct, soit via multicast, via une souscription à un groupe.
 
