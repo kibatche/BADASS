@@ -218,6 +218,15 @@ brctl addbr br0
 
 4) On va créer l'interface vxlan. Voyons la commande en entier, avant de la segmenter afin de mieux la comprendre :
 
+```bash
+/sbin/ip link add name vxlan10 type vxlan id 10 dev eth0 group 239.42.42.1 dstport 4789
+```
+
+Nous voyons que la commande est quasimment la même, si ce n'est qu'au lieu de préciser une adresse distante, l'interface souscrit à un groupe, auquel est attribué une adresse IP. Par ce biais, toutes les interfaces/routeurs vxlan qui souscrivent à ce groupe seront en mesure de communiquer ensemble et de remplir leur table de routage.
+
+On peut la voir ici :
+
+METTRE CAPTURE
 
 ### Commun
 
@@ -246,9 +255,22 @@ brctl addif br0 vxlan10
 /sbin/ip link set dev vxlan10 up
 ```
 
+## Tests
+
+Outre les tests à la correction, on peut juste tester si cela fonctionne. Un simple ping, qui utilise le protocole ICMP, nous permet de voir concrètement l'encapsulation.
+
+METTRE CAPTURE ECRAN
+
+Ci-dessus, nous voyons clairement que le message ICMP est packé avec la couche IP (c'est normal, ICMP c'est pour le protocole Internet), lui même encapsulé dans une trame ethernet, encapsulé dans une trame vxlan, suivie d'un paquet UDP, IP de nouveau et ethernet.
+
+Nous voyons de même ci-dessous un ping, et la partie vxlan ainsi que le groupe :
+
+METTRE CAPTURE ECRAN
+
 ## En résumé
 
 Nous avons vu ici pratiquement comment sont encapsulées les données. On part d'un hôte qui envoit des données, ces données sont encapsulées dans un paquet vxlan, lui-même encapsulé dans un paquet UDP, lui-même encapsulé dans une couche IP. L'inverse est opéré afin que l'hôte 2 puisse recevoir les données de l'hôte 1.
 
-Les interfaces vxlan peuvent être configuré soit de façon statique, en lien direct, soit via multicast, via une souscription à un groupe.
+Les interfaces vxlan peuvent être configurées soit de façon statique, en lien direct, soit via multicast, via une souscription à un groupe.
 
+C'est un moyen commode de dépasser les limitations physiques du protocole ethernet, ainsi que les limitations logiques du protocole vlan afin de faire communiquer des machines ensemble au travers de réseaux extrêmement denses et distincts.

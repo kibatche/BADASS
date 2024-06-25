@@ -16,7 +16,7 @@
 # DHCP config for eth0
 #auto eth0
 #iface eth0 inet dhcp
-#	hostname router-p2-static_chbadad-2
+#	hostname router_chbadad-2
 
 # Static config for eth1
 #auto eth1
@@ -29,4 +29,4 @@
 # DHCP config for eth1
 #auto eth1
 #iface eth1 inet dhcp
-#	hostname router-p2-static_chbadad-2
+#	hostname router_chbadad-2
