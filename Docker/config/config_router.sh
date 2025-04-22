@@ -51,6 +51,14 @@ config_router_multicast(){
   echo "===END==="
 }
 
+configure_vtep_p3() {
+  /sbin/ip link add br0 type bridge
+  /sbin/ip link set dev br0 up
+  ##ajout du vxlan SANS configurer ip (type 3 via la VNI)
+  /sbin/ip link add vxlan10 type vxlan id 10 dstport 4789
+  brctl addif br0 eth1
+  brctl addif br0 vxlan10
+}
 
 HOSTNAME=$(hostname)
 

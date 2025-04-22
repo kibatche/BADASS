@@ -1,0 +1,24 @@
+Pour configurer avec vtish :
+
+> vtish
+> configure t
+
+interface eth0
+  ip address 10.42.42.4/16
+  ip ospf area
+!
+interface lo
+  ip address 1.1.1.4/32
+  ip ospf area 0
+!
+router bgp 1
+  neighbor 1.1.1.1 remote-as 42
+  neighbor 1.1.1.1 update-source lo
+  !
+  address-family l2evpn evpn
+    neighbor 1.1.1.1 activate
+    advertise-all-vni
+  exit address-family
+!
+router ospf
+!

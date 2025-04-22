@@ -1,0 +1,24 @@
+interface eth0
+ip address 10.42.0.1/16
+!
+interface eth1
+ip address 10.42.0.2/16
+!
+interface eth2
+ip address 10.42.0.3/16
+!
+interface lo
+ip address 1.1.1.1/32
+!
+router bgp 1
+neighbor ibgp peer-group
+neighbor remote-as 42
+neighbor ibgp update-source lo
+bgp listen range 1.1.1.0/29 peer-group ibgp
+!
+address-family l2vpn evpn
+    neighbor ibgp activate
+    neighbor ibgp route-reflector-client
+exit address-family
+!
+router ospf

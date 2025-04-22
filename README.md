@@ -1,3 +1,18 @@
+# Cheatsheet
+
+```bash
+vtish # sert a rentrer dans le shell de frrouting
+conf t # sert a rentrer dans le mode de configuration
+```
+
+```bash
+ip a add 20.1.1.1/24 dev eth1 #sert a donner une adresse ip a une interface 
+```
+
+```bash
+
+```
+
 # BADASS
 
 Création d'un réseau avec les protcoles BGP/VXLAN/EVPN à l'aide de GNS3.
