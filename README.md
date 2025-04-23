@@ -10,8 +10,86 @@ ip a add 20.1.1.1/24 dev eth1 #sert a donner une adresse ip a une interface
 ```
 
 ```bash
-
+do sh ip route # sert a montrer les routes sur un vtep par ex.
 ```
+
+Voici une configuration correcte **avant** d'activer les hotes.
+
+![alt text](image.png)
+
+```bash
+do sh bgp summary # sert a montrer le statut actuel de bgp sur une leaf donnees.
+```
+
+Nous pouvons constater ci-dessous que nous n'avons que la route vers le route reflector de configuree (un seul voisin), ce qui est normal car c'est ainsi que ca a ete configuree. Si c'etait via un design full mesh, ce serait probablement different.
+
+![alt text](image-1.png)
+
+```bash
+do sh bgp l2vpn evpn # donne les details de bgp/evpn
+```
+
+Grace a la commande ci-dessus, nous pouvons constater qu'il **n'y a pas** de route de type 2 (avec les adresses mac). C'est normal. NOus avons seulement pour l'instant les routes de type 3, representees par le i[3] :
+
+![alt text](image-2.png)
+
+Si nous demarrons l'hote host_chbadad-1, nous pouvons voir ci-dessous qu'il n'y a pas d'adresse IP assignee a eth0 :
+
+![alt text](image-3.png)
+
+Il y a cependant une adresse MAC (`02:42:b5:73:25:00`).
+
+Si nous regardons la leaf leaf_chbadad-2, qui est directement connectee, nous pouvons voir qu'elle a appris la route de type 2 qui la relie a cet hote :
+
+![alt text](image-4.png)
+
+L'adresse mac est effectivement la meme.
+
+Qu'en est-il des autres leafs ?
+
+Vu que le but du plan de controle represente par le route reflector et evpn, logiquement ces routes de type 2 doivent etre automatiquement refletees sur les autres vtep. Sinon il n'y aurait pas d'interet..
+
+Regardons sur la leaf leaf_chbadad-2 :
+
+![alt text](image-5.png)
+
+Et enfin regardons sur la leaf leaf_chbadad-3 :
+
+![alt text](image-6.png)
+
+Tout semble en ordre !
+
+Maintenant, nous pouvons attribuer une adresse IP a notre hote afin de verifier sa connectivite avec les autres hotes, pour lesquel nous allons faire de meme.
+
+```bash
+ip a add 42.0.0.1/24 dev eth0
+```
+
+Voici le resultat :
+
+![alt text](image-8.png)
+
+Maintenant nous pouvons tester un ping sur un des deux autres hotes.
+
+Cela devrait fonctionner car par exemple, si nous voulons pinguer l'hote 3, celui aura "donne" son adresse mac a leaf-4 qui aura donne l'information au route reflector, qui se chargera de transmettre cette nouvelle donne au differentes lieaf qui sont connectees a lui.
+
+Regadons par exemple si l'adresse MAC de host_chbadad-3 (`02:42:a6:47:3b:00`) a bien ete apprise par leaf_chabadad-1 :
+
+![alt text](image-9.png)
+
+C'est effectivement le cas.
+
+Donc si je fais un ping du host_chbadad-1 (42.0.0.1) vers host_chbadad-2 (42.0.0.2), nous pouvons voir au niveau de la liaisons entre leaf-1 et le RR le paquet encapsule, exactement de la meme facon que dans la P2, a l'exection pret que nous avons egalement le routage sur la couche IP (underlay) via OSPF :
+
+
+
+
+
+
+
+
+
+
 
 # BADASS
 

@@ -3,8 +3,10 @@ Pour configurer avec vtish :
 > vtysh
 > configure t
 
-interface eth0
-  ip address 10.42.42.3/16
+no ipv6 forwarding
+!
+interface eth1
+  ip address 10.1.1.6/30
   ip ospf area 0
 !
 interface lo
