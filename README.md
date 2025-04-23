@@ -15,7 +15,7 @@ do sh ip route # sert a montrer les routes sur un vtep par ex.
 
 Voici une configuration correcte **avant** d'activer les hotes.
 
-![alt text](image.png)
+![alt text](_imgs/image.png)
 
 ```bash
 do sh bgp summary # sert a montrer le statut actuel de bgp sur une leaf donnees.
@@ -23,7 +23,7 @@ do sh bgp summary # sert a montrer le statut actuel de bgp sur une leaf donnees.
 
 Nous pouvons constater ci-dessous que nous n'avons que la route vers le route reflector de configuree (un seul voisin), ce qui est normal car c'est ainsi que ca a ete configuree. Si c'etait via un design full mesh, ce serait probablement different.
 
-![alt text](image-1.png)
+![alt text](_imgs/image-1.png)
 
 ```bash
 do sh bgp l2vpn evpn # donne les details de bgp/evpn
@@ -31,17 +31,17 @@ do sh bgp l2vpn evpn # donne les details de bgp/evpn
 
 Grace a la commande ci-dessus, nous pouvons constater qu'il **n'y a pas** de route de type 2 (avec les adresses mac). C'est normal. NOus avons seulement pour l'instant les routes de type 3, representees par le i[3] :
 
-![alt text](image-2.png)
+![alt text](_imgs/image-2.png)
 
 Si nous demarrons l'hote host_chbadad-1, nous pouvons voir ci-dessous qu'il n'y a pas d'adresse IP assignee a eth0 :
 
-![alt text](image-3.png)
+![alt text](_imgs/image-3.png)
 
 Il y a cependant une adresse MAC (`02:42:b5:73:25:00`).
 
 Si nous regardons la leaf leaf_chbadad-2, qui est directement connectee, nous pouvons voir qu'elle a appris la route de type 2 qui la relie a cet hote :
 
-![alt text](image-4.png)
+![alt text](_imgs/image-4.png)
 
 L'adresse mac est effectivement la meme.
 
@@ -51,11 +51,11 @@ Vu que le but du plan de controle represente par le route reflector et evpn, log
 
 Regardons sur la leaf leaf_chbadad-2 :
 
-![alt text](image-5.png)
+![alt text](_imgs/image-5.png)
 
 Et enfin regardons sur la leaf leaf_chbadad-3 :
 
-![alt text](image-6.png)
+![alt text](_imgs/image-6.png)
 
 Tout semble en ordre !
 
@@ -67,7 +67,7 @@ ip a add 42.0.0.1/24 dev eth0
 
 Voici le resultat :
 
-![alt text](image-8.png)
+![alt text](_imgs/image-8.png)
 
 Maintenant nous pouvons tester un ping sur un des deux autres hotes.
 
@@ -75,7 +75,7 @@ Cela devrait fonctionner car par exemple, si nous voulons pinguer l'hote 3, celu
 
 Regadons par exemple si l'adresse MAC de host_chbadad-3 (`02:42:a6:47:3b:00`) a bien ete apprise par leaf_chabadad-1 :
 
-![alt text](image-9.png)
+![alt text](_imgs/image-9.png)
 
 C'est effectivement le cas.
 
@@ -189,7 +189,7 @@ Deux routeurs sont considérés comme voisins s’ils sont dans le même réseau
 
 La figure 10.13 illustre le format du paquet de mise à jour BGP.
 
-![image](https://github.com/kibatche/BADASS/assets/61985948/12ce2191-ce45-4c49-8a8c-90640a29471f)
+![_imgs/image](https://github.com/kibatche/BADASS/assets/61985948/12ce2191-ce45-4c49-8a8c-90640a29471f)
 
 Le champ Marker est réservé à l’authentification. L’émetteur peut mettre un texte chiffré qui ne peut être déchiffré que par le récepteur possédant la clé de chiffrement. Length donne la longueur du message en octet. Les types de message sont open, update, keepalive et notification.
 
@@ -223,12 +223,12 @@ Le projet
 
 # P1
 
-La P1 est très simple : il s'agit juste de configurer notre vm et gns3, ainsi que deux images docker afin d'avoir :
+La P1 est très simple : il s'agit juste de configurer notre vm et gns3, ainsi que deux _imgs/images docker afin d'avoir :
 
 1) un routeur
 2) un hôte
 
-Pour le routeur, afin de garder une configuration constante (c'est à dire qui ne s'efface pas à chaque création de conteneur à partir d'une image), on va faire notre propre Dockerfile. Il est présent dans le dossier `Docker` de chaque partie. Un script est présent pour construire le conteneur (c'est à lancer si jamais on n'a pas l'image sur la vm).
+Pour le routeur, afin de garder une configuration constante (c'est à dire qui ne s'efface pas à chaque création de conteneur à partir d'une _imgs/image), on va faire notre propre Dockerfile. Il est présent dans le dossier `Docker` de chaque partie. Un script est présent pour construire le conteneur (c'est à lancer si jamais on n'a pas l'_imgs/image sur la vm).
 
 Les services à démarrer (sous forme de daemons, c'est à dire en arrière-plan) sont :
 
@@ -238,9 +238,9 @@ Les services à démarrer (sous forme de daemons, c'est à dire en arrière-plan
 
 Pour ce faire, c'est ultra simple, il suffit de changer dans le fichier /etc/frr/daemons les `no` par des `yes` pour les services voulus.
 
-Concernant l'hôte, on a juste à importer l'image alpine.
+Concernant l'hôte, on a juste à importer l'_imgs/image alpine.
 
-Afin d'importer ces images dans gns3 : `edit/preferences/docker` et ajouter les images.
+Afin d'importer ces _imgs/images dans gns3 : `edit/preferences/docker` et ajouter les _imgs/images.
 
 Ensuite on peut les retrouver dans l'onglet `browse all devices` et les glisser déposer.
 
