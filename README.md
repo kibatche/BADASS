@@ -1,16 +1,16 @@
 # Cheatsheet
 
 ```bash
-vtish # sert a rentrer dans le shell de frrouting
-conf t # sert a rentrer dans le mode de configuration
+vtysh # sert a rentrer dans le shell de frrouting
+configure t # sert a rentrer dans le mode de configuration
 ```
 
 ```bash
-ip a add 20.1.1.1/24 dev eth1 #sert a donner une adresse ip a une interface 
+ip a add 42.0.0.1/24 dev eth1 #sert a donner une adresse ip a une interface 
 ```
 
 ```bash
-do sh ip route # sert a montrer les routes sur un vtep par ex.
+do sh ip route # sert a montrer les routes sur un vtep par ex. pour voir les types (2 ou 3)
 ```
 
 Voici une configuration correcte **avant** d'activer les hotes.
@@ -21,7 +21,7 @@ Voici une configuration correcte **avant** d'activer les hotes.
 do sh bgp summary # sert a montrer le statut actuel de bgp sur une leaf donnees.
 ```
 
-Nous pouvons constater ci-dessous que nous n'avons que la route vers le route reflector de configuree (un seul voisin), ce qui est normal car c'est ainsi que ca a ete configuree. Si c'etait via un design full mesh, ce serait probablement different.
+Nous pouvons constater ci-dessous que nous n'avons que la route vers le route reflector de configuree (un seul voisin), ce qui est normal. Si c'etait via un design full mesh - ouest entre en dur les relations de voisinage - ce serait probablement different.
 
 ![alt text](_imgs/image-1.png)
 
@@ -39,7 +39,7 @@ Si nous demarrons l'hote host_chbadad-1, nous pouvons voir ci-dessous qu'il n'y 
 
 Il y a cependant une adresse MAC (`02:42:b5:73:25:00`).
 
-Si nous regardons la leaf leaf_chbadad-2, qui est directement connectee, nous pouvons voir qu'elle a appris la route de type 2 qui la relie a cet hote :
+Si nous regardons la leaf leaf_chbadad-2, nous pouvons voir qu'elle a appris la route de type 2 qui la relie a cet hote :
 
 ![alt text](_imgs/image-4.png)
 
@@ -47,7 +47,7 @@ L'adresse mac est effectivement la meme.
 
 Qu'en est-il des autres leafs ?
 
-Vu que le but du plan de controle represente par le route reflector et evpn, logiquement ces routes de type 2 doivent etre automatiquement refletees sur les autres vtep. Sinon il n'y aurait pas d'interet..
+Vu que le but du plan de controle represente par le route reflector et evpn est de "faire apprendre" ces routes, logiquement ces routes de type 2 doivent etre automatiquement refletees sur les autres vtep.
 
 Regardons sur la leaf leaf_chbadad-2 :
 
@@ -71,30 +71,21 @@ Voici le resultat :
 
 Maintenant nous pouvons tester un ping sur un des deux autres hotes.
 
-Cela devrait fonctionner car par exemple, si nous voulons pinguer l'hote 3, celui aura "donne" son adresse mac a leaf-4 qui aura donne l'information au route reflector, qui se chargera de transmettre cette nouvelle donne au differentes lieaf qui sont connectees a lui.
+Cela devrait fonctionner car par exemple, si nous voulons pinguer l'hote 3, celui-ci aura "donne" son adresse mac a leaf-4 (une decouverte du voisinage normale) qui aura donne l'information au route reflector, qui se chargera de transmettre cette nouvelle donnee aux differentes leaf qui sont connectees a lui.
 
-Regadons par exemple si l'adresse MAC de host_chbadad-3 (`02:42:a6:47:3b:00`) a bien ete apprise par leaf_chabadad-1 :
+Regardons par exemple si l'adresse MAC de host_chbadad-3 (`02:42:a6:47:3b:00`) a bien ete apprise par leaf_chabadad-1 :
 
 ![alt text](_imgs/image-9.png)
 
 C'est effectivement le cas.
 
-Donc si je fais un ping du host_chbadad-1 (42.0.0.1) vers host_chbadad-2 (42.0.0.2), nous pouvons voir au niveau de la liaisons entre leaf-1 et le RR le paquet encapsule, exactement de la meme facon que dans la P2, a l'exception pres que nous avons egalement le routage sur la couche IP (underlay) via OSPF :
+Donc si nous faisons un ping du host_chbadad-1 (42.0.0.1) vers host_chbadad-2 (42.0.0.2), nous pouvons voir au niveau de la liaison entre leaf-1 et le RR le paquet encapsule, exactement de la meme facon que dans la P2, a l'exception pres que nous avons egalement le routage sur la couche IP (underlay) via OSPF :
 
 ![alt text](_imgs/image-10.png)
 
 Ci-dessous nous constatons bien un paquet icmp encapsule via vxlan, comme dans la P2 :
 
 ![alt text](_imgs/image-11.png)
-
-
-
-
-
-
-
-
-
 
 
 # BADASS
