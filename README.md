@@ -79,7 +79,13 @@ Regadons par exemple si l'adresse MAC de host_chbadad-3 (`02:42:a6:47:3b:00`) a 
 
 C'est effectivement le cas.
 
-Donc si je fais un ping du host_chbadad-1 (42.0.0.1) vers host_chbadad-2 (42.0.0.2), nous pouvons voir au niveau de la liaisons entre leaf-1 et le RR le paquet encapsule, exactement de la meme facon que dans la P2, a l'exection pret que nous avons egalement le routage sur la couche IP (underlay) via OSPF :
+Donc si je fais un ping du host_chbadad-1 (42.0.0.1) vers host_chbadad-2 (42.0.0.2), nous pouvons voir au niveau de la liaisons entre leaf-1 et le RR le paquet encapsule, exactement de la meme facon que dans la P2, a l'exception pres que nous avons egalement le routage sur la couche IP (underlay) via OSPF :
+
+![alt text](_imgs/image-10.png)
+
+Ci-dessous nous constatons bien un paquet icmp encapsule via vxlan, comme dans la P2 :
+
+![alt text](_imgs/image-11.png)
 
 
 
